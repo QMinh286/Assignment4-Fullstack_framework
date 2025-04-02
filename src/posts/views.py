@@ -1,11 +1,24 @@
 from django.shortcuts import render
 from .models import Post
+from .forms import PostForm
 from django.http import JsonResponse
+from profiles.models import Profile
 # Create your views here.
 
 def post_list_and_create(request):
+    form= PostForm(request.POST or None)
     qs = Post.objects.all()
-    return render(request,'posts/main.html',{'qs':qs})
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest': 
+        if form.is_valid():
+            author = Profile.objects.get(user=request.user)
+            instance = form.save(commit=False)
+            instance.author =author
+            instance.save()
+    context = {
+        'form':form
+    }
+    return render(request,'posts/main.html',context)
 
 def load_post_data_view(request, num_posts):
     visible = 3
