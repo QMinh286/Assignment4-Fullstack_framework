@@ -1,4 +1,4 @@
-console.log('functions.js loaded successfully!');
+
 
 window.handleAlerts = (type,msg) => {
     alertBox.innerHTML = ` 
