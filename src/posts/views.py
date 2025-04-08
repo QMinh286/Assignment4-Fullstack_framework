@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Post
+from .models import Post,Photo
 from .forms import PostForm
 from django.http import JsonResponse, HttpResponse
 from profiles.models import Profile
