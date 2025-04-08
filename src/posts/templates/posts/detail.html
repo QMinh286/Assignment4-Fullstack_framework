@@ -45,8 +45,8 @@
                 </div>
                 <div class="modal-footer">
                     <form id="delete-form">
-                        {% csrf_token %}
                         <div class="modal-footer">
+                            {% csrf_token %}
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">close</button>
                             <button type="submit" class="btn btn-success">Delete</button>
                         </div>
