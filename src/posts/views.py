@@ -130,3 +130,28 @@ def image_upload_view(request):
         post = Post.objects.get(id=new_post_id)
         Photo.objects.create(image=img,post=post)
     return HttpResponse()
+
+@login_required
+def search_posts_view(request):
+    query = request.GET.get('query', '')
+    print(f"Search query: {query}")  # Debug print
+    
+    # Search in the title field (case-insensitive)
+    posts = Post.objects.filter(
+        title__icontains=query
+    ).order_by('-created')  # Assuming you have a created field for sorting
+    
+    print(f"Found {posts.count()} posts")  # Debug print
+    
+    data = []
+    for post in posts:
+        item = {
+            'id': post.id,
+            'title': post.title,
+            'body': post.body,
+            'like': True if request.user in post.like.all() else False,
+            'count': post.like_count,
+        }
+        data.append(item)
+    
+    return JsonResponse({'data': data})
