@@ -42,13 +42,6 @@ const getCookie = (name) => {
     return cookieValue;
 }
 const csrftoken = getCookie('csrftoken');
-
-const deleted = localStorage.getItem('title')
-if(deleted){
-    handleAlerts('danger',`deleted "${deleted}"`)
-    localStorage.clear()
-}
-
 // Function to handle alerts
 const handleAlerts = (type, msg) => {
     alertBox.innerHTML = `
@@ -60,6 +53,13 @@ const handleAlerts = (type, msg) => {
         alertBox.innerHTML = ''
     }, 3000)
 }
+
+const deleted = localStorage.getItem('title')
+if(deleted){
+    handleAlerts('danger',`deleted "${deleted}"`)
+    localStorage.clear()
+}
+
 
 const likeUnlikePosts = () => {
     const likeUnlikeForms = [...document.getElementsByClassName('like-unlike-forms')]
@@ -88,8 +88,11 @@ const likeUnlikePosts = () => {
 
 let visible = 3
 
-const renderPosts = (data) => {
-    postsBox.innerHTML = '' // Clear existing posts
+const renderPosts = (data, append = false) => {
+    if (!append) {
+        postsBox.innerHTML = ''
+    }
+    
     data.forEach(element => {
         postsBox.innerHTML += `
             <div class="card mb-2" >
@@ -115,7 +118,7 @@ const renderPosts = (data) => {
     likeUnlikePosts()
 }
 
-const getData = () => {
+const getData = (append = false) => {
     $.ajax({
         type: 'GET',
         url: `/data/${visible}/`,
@@ -125,7 +128,7 @@ const getData = () => {
             setTimeout(() => {
                 spinnerBox.classList.add('not-visible')
                 console.log(data)
-                renderPosts(data)
+                renderPosts(data, append)
             }, 100)
             console.log(response.size)
             if (response.size === 0) {
@@ -191,22 +194,20 @@ const resetSearch = () => {
     searchInput.value = ''
     isSearchMode = false
     endBox.textContent = ''
-    getData()
+    visible = 3 
+    getData(false) 
 }
-
 loadBtn.addEventListener('click', () => {
     if (!isSearchMode) {
         spinnerBox.classList.remove('not-visible')
         visible += 3
-        getData()
+        getData(true)
     }
 })
 
-// Ensure the DOM is fully loaded before adding event listeners
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded, adding search event listeners");
     
-    // Get the elements again to make sure they're available
     const searchBtn = document.getElementById('search-btn')
     const searchInput = document.getElementById('search-input')
     const resetSearchBtn = document.getElementById('reset-search-btn')

@@ -134,14 +134,12 @@ def image_upload_view(request):
 @login_required
 def search_posts_view(request):
     query = request.GET.get('query', '')
-    print(f"Search query: {query}")  # Debug print
-    
-    # Search in the title field (case-insensitive)
+    print(f"Search query: {query}") 
     posts = Post.objects.filter(
         title__icontains=query
-    ).order_by('-created')  # Assuming you have a created field for sorting
+    ).order_by('-created') 
     
-    print(f"Found {posts.count()} posts")  # Debug print
+    print(f"Found {posts.count()} posts") 
     
     data = []
     for post in posts:
